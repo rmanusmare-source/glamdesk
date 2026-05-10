@@ -218,6 +218,17 @@
   ::-webkit-scrollbar { width:5px; }
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:var(--border); border-radius:10px; }
+
+  /* AUTOCOMPLETE */
+  .ac-wrap { position:relative; }
+  .ac-dropdown { display:none; position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:500; background:var(--surface2); border:1px solid var(--accent); border-radius:8px; max-height:200px; overflow-y:auto; box-shadow:0 8px 24px rgba(0,0,0,0.5); }
+  .ac-dropdown.open { display:block; }
+  .ac-option { padding:10px 14px; font-size:13px; color:var(--text-muted); cursor:pointer; transition:background 0.1s; display:flex; align-items:center; gap:10px; }
+  .ac-option:hover, .ac-option.highlighted { background:var(--accent-soft); color:var(--text); }
+  .ac-avatar { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; flex-shrink:0; }
+  .ac-name { font-weight:500; color:var(--text); }
+  .ac-detail { font-size:11px; color:var(--text-dim); }
+  .ac-empty { padding:12px 14px; font-size:13px; color:var(--text-dim); text-align:center; }
 </style>
 </head>
 <body>
@@ -395,7 +406,7 @@
 <div class="modal-overlay" id="modal-booking">
   <div class="modal">
     <div class="modal-title">New Booking</div>
-    <div class="form-row"><label class="form-label">Client Name</label><input class="form-input" id="bk-client" type="text" placeholder="Client name" list="clients-datalist" autocomplete="off"><datalist id="clients-datalist"></datalist></div>
+    <div class="form-row"><label class="form-label">Client Name</label><div class="ac-wrap"><input class="form-input" id="bk-client" type="text" placeholder="Type to search clients..." autocomplete="off" oninput="acFilter(this,'bk-ac')" onfocus="acFilter(this,'bk-ac')" onkeydown="acKey(event,'bk-ac')"><div class="ac-dropdown" id="bk-ac"></div></div></div>
     <div class="form-grid-2">
       <div class="form-row"><label class="form-label">Service</label><select class="form-select" id="bk-service"><option>Bridal Makeup</option><option>Editorial</option><option>Party Glam</option><option>Engagement Look</option><option>Photoshoot</option><option>Sangeet</option><option>Reception</option><option>Other</option></select></div>
       <div class="form-row"><label class="form-label">Duration</label><select class="form-select" id="bk-duration"><option>1 hour</option><option>1.5 hours</option><option>2 hours</option><option>3 hours</option><option>Half day</option><option>Full day</option></select></div>
@@ -434,7 +445,7 @@
   <div class="modal">
     <div class="modal-title">New Invoice</div>
     <div class="form-grid-2">
-      <div class="form-row"><label class="form-label">Client Name</label><input class="form-input" id="inv-client" type="text" placeholder="Client name" list="clients-datalist" autocomplete="off"></div>
+      <div class="form-row"><label class="form-label">Client Name</label><div class="ac-wrap"><input class="form-input" id="inv-client" type="text" placeholder="Type to search clients..." autocomplete="off" oninput="acFilter(this,'inv-ac')" onfocus="acFilter(this,'inv-ac')" onkeydown="acKey(event,'inv-ac')"><div class="ac-dropdown" id="inv-ac"></div></div></div>
       <div class="form-row"><label class="form-label">Service</label><select class="form-select" id="inv-service"><option>Bridal Makeup</option><option>Editorial</option><option>Party Glam</option><option>Engagement Look</option><option>Photoshoot</option><option>Sangeet</option><option>Other</option></select></div>
     </div>
     <div class="form-grid-2">
@@ -465,7 +476,7 @@
     <div class="modal-title">New Mood Board</div>
     <div class="form-row"><label class="form-label">Board Name</label><input class="form-input" id="mb-name" type="text" placeholder="e.g. Priya — Bridal Look"></div>
     <div class="form-grid-2">
-      <div class="form-row"><label class="form-label">Client</label><input class="form-input" id="mb-client" type="text" placeholder="Client name" list="clients-datalist" autocomplete="off"></div>
+      <div class="form-row"><label class="form-label">Client</label><div class="ac-wrap"><input class="form-input" id="mb-client" type="text" placeholder="Type to search clients..." autocomplete="off" oninput="acFilter(this,'mb-ac')" onfocus="acFilter(this,'mb-ac')" onkeydown="acKey(event,'mb-ac')"><div class="ac-dropdown" id="mb-ac"></div></div></div>
       <div class="form-row"><label class="form-label">Occasion</label><select class="form-select" id="mb-occasion"><option>Bridal</option><option>Editorial</option><option>Party</option><option>Engagement</option><option>Casual</option><option>Sangeet</option><option>Reception</option></select></div>
     </div>
     <div class="form-row">
@@ -691,9 +702,6 @@ window.deleteClient = async id => {
 
 function renderClients(list){
   const g=$('clientsGrid');
-  // Update datalist for all client name inputs
-  const dl=$('clients-datalist');
-  if(dl) dl.innerHTML=allClients.map(c=>`<option value="${c.name}">`).join('');
   if(!list.length){g.innerHTML='<div class="empty"><div class="empty-icon">◉</div><div class="empty-text">No clients yet — add your first client</div></div>';return;}
   g.innerHTML=list.map(c=>`
     <div class="client-card">
@@ -894,6 +902,56 @@ function renderBoards(){
       </div>
     </div>`).join('')+newCard;
 }
+
+
+// ── AUTOCOMPLETE ──
+window.acFilter = (input, dropId) => {
+  const q = input.value.trim().toLowerCase();
+  const drop = $(dropId);
+  const matches = q.length === 0
+    ? allClients.slice(0, 8)
+    : allClients.filter(c => c.name.toLowerCase().includes(q)).slice(0, 8);
+  if (!matches.length) {
+    drop.innerHTML = `<div class="ac-empty">No clients found</div>`;
+  } else {
+    drop.innerHTML = matches.map((c, i) => `
+      <div class="ac-option ${i===0?"highlighted":""}"
+           onmousedown="acSelect(event,'${input.id}','${dropId}','${c.name.replace(/'/g, \"\'\")}')">
+        <div class="ac-avatar" style="background:${c.color}20;color:${c.color}">${c.initials}</div>
+        <div>
+          <div class="ac-name">${c.name}</div>
+          <div class="ac-detail">${c.tone||""} · ${c.type||""} skin</div>
+        </div>
+      </div>`).join("");
+  }
+  drop.classList.add("open");
+};
+
+window.acSelect = (e, inputId, dropId, name) => {
+  e.preventDefault();
+  $(inputId).value = name;
+  $(dropId).classList.remove("open");
+};
+
+window.acKey = (e, dropId) => {
+  const drop = $(dropId);
+  const opts = drop.querySelectorAll(".ac-option");
+  const current = drop.querySelector(".highlighted");
+  let idx = Array.from(opts).indexOf(current);
+  if (e.key === "ArrowDown") { e.preventDefault(); idx = Math.min(idx+1, opts.length-1); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); idx = Math.max(idx-1, 0); }
+  else if (e.key === "Enter" && current) { e.preventDefault(); current.dispatchEvent(new MouseEvent("mousedown")); return; }
+  else if (e.key === "Escape") { drop.classList.remove("open"); return; }
+  else return;
+  opts.forEach(o => o.classList.remove("highlighted"));
+  if (opts[idx]) opts[idx].classList.add("highlighted");
+};
+
+document.addEventListener("click", e => {
+  if (!e.target.closest(".ac-wrap")) {
+    document.querySelectorAll(".ac-dropdown").forEach(d => d.classList.remove("open"));
+  }
+});
 
 // FIRESTORE SECURITY RULES (paste in Firebase Console → Firestore → Rules):
 // rules_version = '2';
