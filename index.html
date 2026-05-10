@@ -573,7 +573,14 @@ window.handleSignOut = async () => {
 };
 
 // AUTH STATE
+// Failsafe: if auth doesn't resolve in 8s, show auth screen anyway
+const authTimeout = setTimeout(() => {
+  $('loadingScreen').style.display='none';
+  $('authScreen').style.display='flex';
+}, 8000);
+
 onAuthStateChanged(auth, user => {
+  clearTimeout(authTimeout);
   $('loadingScreen').style.display='none';
   if(user){
     currentUser=user;
