@@ -395,7 +395,7 @@
 <div class="modal-overlay" id="modal-booking">
   <div class="modal">
     <div class="modal-title">New Booking</div>
-    <div class="form-row"><label class="form-label">Client Name</label><input class="form-input" id="bk-client" type="text" placeholder="Client name"></div>
+    <div class="form-row"><label class="form-label">Client Name</label><input class="form-input" id="bk-client" type="text" placeholder="Client name" list="clients-datalist" autocomplete="off"><datalist id="clients-datalist"></datalist></div>
     <div class="form-grid-2">
       <div class="form-row"><label class="form-label">Service</label><select class="form-select" id="bk-service"><option>Bridal Makeup</option><option>Editorial</option><option>Party Glam</option><option>Engagement Look</option><option>Photoshoot</option><option>Sangeet</option><option>Reception</option><option>Other</option></select></div>
       <div class="form-row"><label class="form-label">Duration</label><select class="form-select" id="bk-duration"><option>1 hour</option><option>1.5 hours</option><option>2 hours</option><option>3 hours</option><option>Half day</option><option>Full day</option></select></div>
@@ -434,7 +434,7 @@
   <div class="modal">
     <div class="modal-title">New Invoice</div>
     <div class="form-grid-2">
-      <div class="form-row"><label class="form-label">Client Name</label><input class="form-input" id="inv-client" type="text" placeholder="Client name"></div>
+      <div class="form-row"><label class="form-label">Client Name</label><input class="form-input" id="inv-client" type="text" placeholder="Client name" list="clients-datalist" autocomplete="off"></div>
       <div class="form-row"><label class="form-label">Service</label><select class="form-select" id="inv-service"><option>Bridal Makeup</option><option>Editorial</option><option>Party Glam</option><option>Engagement Look</option><option>Photoshoot</option><option>Sangeet</option><option>Other</option></select></div>
     </div>
     <div class="form-grid-2">
@@ -465,7 +465,7 @@
     <div class="modal-title">New Mood Board</div>
     <div class="form-row"><label class="form-label">Board Name</label><input class="form-input" id="mb-name" type="text" placeholder="e.g. Priya — Bridal Look"></div>
     <div class="form-grid-2">
-      <div class="form-row"><label class="form-label">Client</label><input class="form-input" id="mb-client" type="text" placeholder="Client name"></div>
+      <div class="form-row"><label class="form-label">Client</label><input class="form-input" id="mb-client" type="text" placeholder="Client name" list="clients-datalist" autocomplete="off"></div>
       <div class="form-row"><label class="form-label">Occasion</label><select class="form-select" id="mb-occasion"><option>Bridal</option><option>Editorial</option><option>Party</option><option>Engagement</option><option>Casual</option><option>Sangeet</option><option>Reception</option></select></div>
     </div>
     <div class="form-row">
@@ -691,6 +691,9 @@ window.deleteClient = async id => {
 
 function renderClients(list){
   const g=$('clientsGrid');
+  // Update datalist for all client name inputs
+  const dl=$('clients-datalist');
+  if(dl) dl.innerHTML=allClients.map(c=>`<option value="${c.name}">`).join('');
   if(!list.length){g.innerHTML='<div class="empty"><div class="empty-icon">◉</div><div class="empty-text">No clients yet — add your first client</div></div>';return;}
   g.innerHTML=list.map(c=>`
     <div class="client-card">
