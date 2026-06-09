@@ -1287,7 +1287,7 @@ window.analyseSlot = async function(slot) {
   if (slot === "outfit") notesField = "outfit-notes";
 
   try {
-    var OPENAI_KEY = "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";
+    var OPENAI_KEY = "PASTE_YOUR_OPENAI_KEY_HERE";
     var response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + OPENAI_KEY },
