@@ -49,12 +49,16 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .app-shell { display:none; width:100%; }
 .app-shell.visible { display:flex; }
 
+/* PUBLIC VIEW (shared look / report) */
+.public-view { display:none; width:100%; min-height:100vh; background:var(--bg); overflow-y:auto; }
+.public-view.visible { display:block; }
+
 /* SIDEBAR */
 .sidebar { width:var(--sidebar-w); background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; height:100vh; position:fixed; left:0; top:0; }
 .logo { padding:28px 24px 20px; border-bottom:1px solid var(--border); }
 .logo-mark { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; color:var(--accent); }
 .logo-sub { font-size:10px; color:var(--text-dim); letter-spacing:2px; text-transform:uppercase; margin-top:2px; }
-.nav { padding:16px 12px; flex:1; display:flex; flex-direction:column; gap:2px; }
+.nav { padding:16px 12px; flex:1; display:flex; flex-direction:column; gap:2px; overflow-y:auto; }
 .nav-section-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); padding:12px 12px 6px; }
 .nav-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13.5px; font-weight:400; color:var(--text-muted); transition:all 0.15s; border:1px solid transparent; }
 .nav-item:hover { background:var(--surface2); color:var(--text); }
@@ -75,13 +79,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .topbar { padding:20px 32px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--surface); position:sticky; top:0; z-index:10; }
 .page-title { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:400; color:var(--text); }
 .page-title span { color:var(--accent); font-style:italic; }
-.topbar-actions { display:flex; gap:10px; }
+.topbar-actions { display:flex; gap:10px; align-items:center; }
 .btn { padding:8px 18px; border-radius:8px; font-size:13px; font-weight:500; font-family:'DM Sans',sans-serif; cursor:pointer; border:none; transition:all 0.15s; }
 .btn-primary { background:var(--accent); color:var(--bg); }
 .btn-primary:hover { background:var(--accent2); }
 .btn-ghost { background:transparent; color:var(--text-muted); border:1px solid var(--border); }
 .btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
 .btn-sm { padding:5px 12px; font-size:12px; }
+.btn-danger { background:var(--rose-soft); color:var(--rose); border:1px solid rgba(212,120,138,0.2); }
 .content { padding:28px 32px; flex:1; }
 .page { display:none; }
 .page.active { display:block; animation:fadeIn 0.2s ease; }
@@ -122,29 +127,97 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .search-bar:focus { border-color:var(--accent); }
 .search-bar::placeholder { color:var(--text-dim); }
 .clients-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-.client-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; transition:all 0.15s; }
+.client-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; transition:all 0.15s; cursor:pointer; }
 .client-card:hover { border-color:var(--accent); transform:translateY(-1px); }
 .client-card-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; }
 .client-avatar { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:600; flex-shrink:0; }
-.client-card-actions { opacity:0; transition:opacity 0.15s; }
+.client-card-actions { opacity:0; transition:opacity 0.15s; display:flex; gap:6px; }
 .client-card:hover .client-card-actions { opacity:1; }
 .client-card-name { font-weight:500; font-size:14px; color:var(--text); margin-bottom:3px; }
 .client-card-detail { font-size:12px; color:var(--text-dim); margin-bottom:4px; }
 .client-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
 .tag { font-size:10px; padding:2px 8px; border-radius:20px; background:var(--surface3); color:var(--text-muted); }
+.looks-summary { margin-top:12px; padding-top:12px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.looks-count { font-size:11px; color:var(--text-dim); }
+.looks-dots { display:flex; gap:4px; }
+.look-dot { width:8px; height:8px; border-radius:50%; background:var(--surface3); }
+.look-dot.approved { background:var(--green); }
+.look-dot.shared { background:var(--blue); }
+.look-dot.draft { background:var(--text-dim); }
 
-/* BOARDS */
-.board-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-.board-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:all 0.15s; }
-.board-card:hover { border-color:var(--accent); transform:translateY(-1px); }
-.board-preview { height:140px; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:2px; overflow:hidden; }
-.board-info { padding:14px; display:flex; align-items:flex-start; justify-content:space-between; }
-.board-name { font-weight:500; font-size:13.5px; color:var(--text); margin-bottom:3px; }
-.board-meta { font-size:11px; color:var(--text-dim); }
-.board-card-actions { opacity:0; transition:opacity 0.15s; }
-.board-card:hover .board-card-actions { opacity:1; }
-.board-new { border:2px dashed var(--border); background:transparent; display:flex; flex-direction:column; align-items:center; justify-content:center; height:220px; gap:10px; color:var(--text-dim); transition:all 0.15s; cursor:pointer; border-radius:12px; }
-.board-new:hover { border-color:var(--accent); color:var(--accent); }
+/* CLIENT DETAIL / LOOKS */
+.client-detail-header { display:flex; align-items:center; gap:16px; margin-bottom:28px; padding-bottom:20px; border-bottom:1px solid var(--border); }
+.client-detail-avatar { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:600; flex-shrink:0; }
+.client-detail-name { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:600; color:var(--text); }
+.client-detail-meta { font-size:13px; color:var(--text-muted); margin-top:3px; }
+.client-detail-allergy { font-size:12px; color:var(--rose); margin-top:3px; }
+.back-btn { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text-muted); cursor:pointer; margin-bottom:20px; transition:color 0.15s; background:none; border:none; font-family:'DM Sans',sans-serif; padding:0; }
+.back-btn:hover { color:var(--accent); }
+
+/* LOOKS GRID */
+.looks-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.look-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; cursor:pointer; transition:all 0.15s; }
+.look-card:hover { border-color:var(--accent); transform:translateY(-1px); }
+.look-card-preview { height:120px; background:var(--surface2); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.look-card-preview img { width:100%; height:100%; object-fit:cover; }
+.look-card-preview-placeholder { font-size:32px; opacity:0.3; }
+.look-card-body { padding:14px; }
+.look-card-name { font-weight:500; font-size:14px; color:var(--text); margin-bottom:4px; }
+.look-card-meta { font-size:11px; color:var(--text-dim); }
+.look-card-status { margin-top:10px; }
+.look-new-card { border:2px dashed var(--border); background:transparent; display:flex; flex-direction:column; align-items:center; justify-content:center; height:200px; gap:8px; color:var(--text-dim); transition:all 0.15s; cursor:pointer; border-radius:12px; }
+.look-new-card:hover { border-color:var(--accent); color:var(--accent); }
+
+/* LOOK DETAIL */
+.look-detail-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid var(--border); }
+.look-detail-title { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:600; color:var(--text); }
+.look-detail-client { font-size:13px; color:var(--text-muted); margin-top:4px; }
+.look-detail-actions { display:flex; gap:10px; align-items:center; }
+
+.look-section { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; }
+.look-section-title { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:600; color:var(--text); margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
+
+/* REFERENCE SLOT */
+.ref-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+.ref-slot { background:var(--surface2); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.ref-slot-header { padding:10px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.ref-slot-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); font-weight:500; }
+.ref-slot-body { padding:14px; }
+.ref-image-area { width:100%; height:140px; background:var(--surface3); border:2px dashed var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s; position:relative; overflow:hidden; margin-bottom:10px; }
+.ref-image-area:hover { border-color:var(--accent); }
+.ref-image-area img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+.ref-image-area .upload-hint { font-size:12px; color:var(--text-dim); text-align:center; line-height:1.5; }
+.ref-image-area .upload-icon { font-size:24px; margin-bottom:6px; opacity:0.4; }
+.ref-upload-input { display:none; }
+.ref-notes { width:100%; padding:8px 12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:12.5px; font-family:'DM Sans',sans-serif; outline:none; resize:none; min-height:70px; transition:border-color 0.15s; }
+.ref-notes:focus { border-color:var(--accent); }
+.ref-notes::placeholder { color:var(--text-dim); }
+.ai-btn { display:flex; align-items:center; gap:6px; padding:6px 12px; background:var(--accent-soft); color:var(--accent); border:1px solid rgba(201,169,122,0.3); border-radius:6px; font-size:11px; font-weight:500; cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; margin-top:8px; }
+.ai-btn:hover { background:rgba(201,169,122,0.2); }
+.ai-btn:disabled { opacity:0.5; cursor:not-allowed; }
+.ai-btn .ai-spinner { width:10px; height:10px; border:1.5px solid var(--accent); border-top-color:transparent; border-radius:50%; animation:spin 0.6s linear infinite; display:none; }
+.ai-btn.loading .ai-spinner { display:block; }
+.ai-btn.loading .ai-icon { display:none; }
+
+/* OUTFIT SECTION */
+.outfit-grid { display:grid; grid-template-columns:200px 1fr; gap:16px; }
+.outfit-image-area { width:100%; height:180px; background:var(--surface3); border:2px dashed var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s; position:relative; overflow:hidden; }
+.outfit-image-area:hover { border-color:var(--accent); }
+.outfit-image-area img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+.outfit-image-area .upload-hint { font-size:11px; color:var(--text-dim); text-align:center; }
+.outfit-image-area .upload-icon { font-size:20px; opacity:0.4; margin-bottom:4px; }
+
+/* STATUS BAR */
+.status-bar { display:flex; align-items:center; gap:0; background:var(--surface2); border-radius:10px; overflow:hidden; border:1px solid var(--border); }
+.status-step { flex:1; padding:10px; text-align:center; font-size:12px; font-weight:500; cursor:pointer; transition:all 0.15s; color:var(--text-dim); border:none; background:none; font-family:'DM Sans',sans-serif; }
+.status-step.active { background:var(--accent-soft); color:var(--accent); }
+.status-step.done { background:var(--green-soft); color:var(--green); }
+.status-step:hover { color:var(--text); }
+
+/* TECHNIQUE NOTES */
+.technique-area { width:100%; padding:12px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px; font-family:'DM Sans',sans-serif; outline:none; resize:vertical; min-height:120px; transition:border-color 0.15s; line-height:1.6; }
+.technique-area:focus { border-color:var(--accent); }
+.technique-area::placeholder { color:var(--text-dim); }
 
 /* CALENDAR */
 .calendar-grid { display:grid; grid-template-columns:1fr 300px; gap:20px; }
@@ -213,6 +286,43 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ac-detail { font-size:11px; color:var(--text-dim); }
 .ac-empty { padding:14px; font-size:13px; color:var(--text-dim); text-align:center; }
 
+/* PUBLIC VIEW STYLES */
+.pub-container { max-width:680px; margin:0 auto; padding:32px 20px; }
+.pub-header { text-align:center; padding:32px 0 24px; border-bottom:1px solid var(--border); margin-bottom:28px; }
+.pub-logo { font-family:'Cormorant Garamond',serif; font-size:16px; color:var(--accent); margin-bottom:16px; letter-spacing:1px; }
+.pub-title { font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:600; color:var(--text); margin-bottom:6px; }
+.pub-subtitle { font-size:13px; color:var(--text-muted); }
+.pub-client-info { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 20px; margin-bottom:24px; display:flex; gap:16px; }
+.pub-client-detail { font-size:13px; color:var(--text-muted); }
+.pub-client-detail strong { color:var(--text); display:block; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); margin-bottom:2px; }
+.pub-look-section { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; }
+.pub-look-name { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; color:var(--text); margin-bottom:4px; }
+.pub-look-meta { font-size:12px; color:var(--text-dim); margin-bottom:16px; }
+.pub-refs { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:16px; }
+.pub-ref { }
+.pub-ref-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px; }
+.pub-ref img { width:100%; height:140px; object-fit:cover; border-radius:8px; border:1px solid var(--border); }
+.pub-ref-placeholder { width:100%; height:140px; background:var(--surface2); border-radius:8px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--text-dim); font-size:12px; }
+.pub-ref-notes { font-size:12px; color:var(--text-muted); margin-top:6px; line-height:1.5; }
+.pub-outfit { display:grid; grid-template-columns:160px 1fr; gap:16px; margin-bottom:16px; }
+.pub-outfit img { width:100%; height:160px; object-fit:cover; border-radius:8px; border:1px solid var(--border); }
+.pub-outfit-placeholder { width:100%; height:160px; background:var(--surface2); border-radius:8px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--text-dim); font-size:12px; }
+.pub-outfit-desc { font-size:13px; color:var(--text-muted); line-height:1.6; }
+.pub-technique { background:var(--surface2); border-radius:8px; padding:14px; font-size:13px; color:var(--text-muted); line-height:1.6; white-space:pre-wrap; }
+.pub-approve-area { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; text-align:center; margin-top:24px; }
+.pub-approve-title { font-family:'Cormorant Garamond',serif; font-size:20px; color:var(--text); margin-bottom:8px; }
+.pub-approve-desc { font-size:13px; color:var(--text-muted); margin-bottom:20px; }
+.pub-approve-btns { display:flex; gap:12px; justify-content:center; }
+.pub-btn-approve { padding:12px 28px; background:var(--green); color:var(--bg); border:none; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
+.pub-btn-approve:hover { opacity:0.9; }
+.pub-btn-changes { padding:12px 28px; background:transparent; color:var(--text-muted); border:1px solid var(--border); border-radius:10px; font-size:14px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
+.pub-btn-changes:hover { border-color:var(--rose); color:var(--rose); }
+.pub-approved-badge { display:inline-flex; align-items:center; gap:6px; padding:10px 20px; background:var(--green-soft); color:var(--green); border-radius:20px; font-size:13px; font-weight:500; }
+.pub-checklist { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; }
+.pub-checklist-item { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid rgba(46,40,51,0.5); font-size:13px; color:var(--text-muted); }
+.pub-checklist-item:last-child { border-bottom:none; }
+.pub-checklist-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); margin-top:6px; flex-shrink:0; }
+
 /* MISC */
 .empty { text-align:center; padding:48px 20px; color:var(--text-dim); }
 .empty-icon { font-size:36px; margin-bottom:12px; opacity:0.4; }
@@ -224,6 +334,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .section-title { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:600; color:var(--text); }
 .icon-btn { background:none; border:none; cursor:pointer; padding:4px 8px; border-radius:6px; font-size:13px; color:var(--text-dim); transition:all 0.15s; }
 .icon-btn:hover { color:var(--rose); background:var(--rose-soft); }
+.divider { border:none; border-top:1px solid var(--border); margin:20px 0; }
 ::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:var(--border); border-radius:10px; }
@@ -259,6 +370,16 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 </div>
 
+<!-- PUBLIC VIEW -->
+<div class="public-view" id="publicView">
+  <div class="pub-container" id="pubContent">
+    <div style="text-align:center;padding:80px 20px;color:var(--text-dim)">
+      <div class="loading-spinner" style="margin:0 auto 16px"></div>
+      <div>Loading...</div>
+    </div>
+  </div>
+</div>
+
 <!-- APP -->
 <div class="app-shell" id="appShell">
   <aside class="sidebar">
@@ -268,15 +389,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     </div>
     <nav class="nav">
       <div class="nav-section-label">Overview</div>
-      <div class="nav-item active" onclick="navigate('dashboard',this)"><span class="nav-icon">◈</span> Dashboard</div>
+      <div class="nav-item active" onclick="navigate('dashboard',this)"><span class="nav-icon">o</span> Dashboard</div>
       <div class="nav-section-label">Manage</div>
-      <div class="nav-item" onclick="navigate('clients',this)"><span class="nav-icon">◉</span> Clients</div>
-      <div class="nav-item" onclick="navigate('calendar',this)"><span class="nav-icon">◷</span> Bookings</div>
-      <div class="nav-item" onclick="navigate('moodboard',this)"><span class="nav-icon">◈</span> Mood Boards</div>
+      <div class="nav-item" onclick="navigate('clients',this)"><span class="nav-icon">o</span> Clients</div>
+      <div class="nav-item" onclick="navigate('calendar',this)"><span class="nav-icon">o</span> Bookings</div>
       <div class="nav-section-label">Finance</div>
-      <div class="nav-item" onclick="navigate('invoices',this)"><span class="nav-icon">◎</span> Invoices</div>
-      <div class="nav-item" onclick="navigate('payments',this)"><span class="nav-icon">◐</span> Payments</div>
-      <div class="nav-item" onclick="navigate('expenses',this)"><span class="nav-icon">◑</span> Expenses</div>
+      <div class="nav-item" onclick="navigate('invoices',this)"><span class="nav-icon">o</span> Invoices</div>
+      <div class="nav-item" onclick="navigate('payments',this)"><span class="nav-icon">o</span> Payments</div>
+      <div class="nav-item" onclick="navigate('expenses',this)"><span class="nav-icon">o</span> Expenses</div>
     </nav>
     <div class="sidebar-footer">
       <div class="user-chip">
@@ -293,7 +413,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   <main class="main">
     <div class="topbar">
       <div class="page-title" id="pageTitle">Dashboard</div>
-      <div class="topbar-actions">
+      <div class="topbar-actions" id="topbarActions">
         <button class="btn btn-primary" id="topbarAction" onclick="handlePrimaryAction()">+ New Booking</button>
       </div>
     </div>
@@ -321,10 +441,164 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         </div>
       </div>
 
-      <!-- CLIENTS -->
+      <!-- CLIENTS LIST -->
       <div class="page" id="page-clients">
         <input class="search-bar" placeholder="Search by name, skin tone, or look..." id="clientSearch" oninput="filterClients(this.value)">
         <div class="clients-grid" id="clientsGrid"><div class="empty"><div class="empty-icon">o</div><div class="empty-text">No clients yet</div></div></div>
+      </div>
+
+      <!-- CLIENT DETAIL + LOOKS -->
+      <div class="page" id="page-client-detail">
+        <button class="back-btn" onclick="navigate('clients',document.querySelector('[onclick*=clients]'))">
+          &larr; Back to Clients
+        </button>
+        <div class="client-detail-header">
+          <div class="client-detail-avatar" id="detail-avatar"></div>
+          <div>
+            <div class="client-detail-name" id="detail-name">--</div>
+            <div class="client-detail-meta" id="detail-meta">--</div>
+            <div class="client-detail-allergy" id="detail-allergy"></div>
+          </div>
+        </div>
+        <div class="section-header">
+          <div class="section-title">Looks</div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('modal-new-look')">+ New Look</button>
+        </div>
+        <div class="looks-grid" id="looksGrid">
+          <div class="empty"><div class="empty-text">No looks yet</div></div>
+        </div>
+      </div>
+
+      <!-- LOOK DETAIL -->
+      <div class="page" id="page-look-detail">
+        <button class="back-btn" id="lookBackBtn" onclick="goBackToClient()">
+          &larr; Back to Client
+        </button>
+
+        <div class="look-detail-header">
+          <div>
+            <div class="look-detail-title" id="look-detail-title">--</div>
+            <div class="look-detail-client" id="look-detail-client">--</div>
+          </div>
+          <div class="look-detail-actions">
+            <div class="status-bar" id="look-status-bar">
+              <button class="status-step" onclick="setLookStatus('draft')">Draft</button>
+              <button class="status-step" onclick="setLookStatus('shared')">Shared</button>
+              <button class="status-step" onclick="setLookStatus('approved')">Approved</button>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="shareLookBtn" onclick="shareLook()">Share Link</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteLook()">Delete</button>
+          </div>
+        </div>
+
+        <!-- OUTFIT -->
+        <div class="look-section">
+          <div class="look-section-title">
+            Outfit
+            <button class="ai-btn" id="outfit-ai-btn" onclick="analyseSlot('outfit')">
+              <span class="ai-icon">AI</span>
+              <span class="ai-spinner"></span>
+              Analyse Outfit
+            </button>
+          </div>
+          <div class="outfit-grid">
+            <div>
+              <div class="outfit-image-area" onclick="triggerUpload('outfit-img-input')" id="outfit-img-area">
+                <div class="upload-icon">+</div>
+                <div class="upload-hint">Upload outfit photo</div>
+              </div>
+              <input type="file" id="outfit-img-input" class="ref-upload-input" accept="image/*" onchange="handleImageUpload('outfit', this)">
+            </div>
+            <div>
+              <label class="form-label" style="margin-bottom:8px;display:block">Outfit Description</label>
+              <textarea class="technique-area" id="outfit-desc" placeholder="Describe the outfit — colour, fabric, style, jewellery..." style="min-height:80px" onblur="saveLookField('outfitDesc', this.value)"></textarea>
+              <textarea class="ref-notes" id="outfit-notes" placeholder="AI analysis will appear here..." style="margin-top:10px" onblur="saveLookField('outfitNotes', this.value)"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- REFERENCES -->
+        <div class="look-section">
+          <div class="look-section-title">Reference Images</div>
+          <div class="ref-grid">
+            <div class="ref-slot">
+              <div class="ref-slot-header">
+                <span class="ref-slot-label">Eyes</span>
+                <button class="ai-btn" onclick="analyseSlot('eyes')">
+                  <span class="ai-icon">AI</span><span class="ai-spinner"></span> Analyse
+                </button>
+              </div>
+              <div class="ref-slot-body">
+                <div class="ref-image-area" onclick="triggerUpload('eyes-img-input')" id="eyes-img-area">
+                  <div class="upload-icon">+</div>
+                  <div class="upload-hint">Upload eye reference</div>
+                </div>
+                <input type="file" id="eyes-img-input" class="ref-upload-input" accept="image/*" onchange="handleImageUpload('eyes', this)">
+                <textarea class="ref-notes" id="eyes-notes" placeholder="Eye look notes..." onblur="saveLookField('eyesNotes', this.value)"></textarea>
+              </div>
+            </div>
+
+            <div class="ref-slot">
+              <div class="ref-slot-header">
+                <span class="ref-slot-label">Lips</span>
+                <button class="ai-btn" onclick="analyseSlot('lips')">
+                  <span class="ai-icon">AI</span><span class="ai-spinner"></span> Analyse
+                </button>
+              </div>
+              <div class="ref-slot-body">
+                <div class="ref-image-area" onclick="triggerUpload('lips-img-input')" id="lips-img-area">
+                  <div class="upload-icon">+</div>
+                  <div class="upload-hint">Upload lip reference</div>
+                </div>
+                <input type="file" id="lips-img-input" class="ref-upload-input" accept="image/*" onchange="handleImageUpload('lips', this)">
+                <textarea class="ref-notes" id="lips-notes" placeholder="Lip look notes..." onblur="saveLookField('lipsNotes', this.value)"></textarea>
+              </div>
+            </div>
+
+            <div class="ref-slot">
+              <div class="ref-slot-header">
+                <span class="ref-slot-label">Skin</span>
+                <button class="ai-btn" onclick="analyseSlot('skin')">
+                  <span class="ai-icon">AI</span><span class="ai-spinner"></span> Analyse
+                </button>
+              </div>
+              <div class="ref-slot-body">
+                <div class="ref-image-area" onclick="triggerUpload('skin-img-input')" id="skin-img-area">
+                  <div class="upload-icon">+</div>
+                  <div class="upload-hint">Upload skin reference</div>
+                </div>
+                <input type="file" id="skin-img-input" class="ref-upload-input" accept="image/*" onchange="handleImageUpload('skin', this)">
+                <textarea class="ref-notes" id="skin-notes" placeholder="Skin finish notes..." onblur="saveLookField('skinNotes', this.value)"></textarea>
+              </div>
+            </div>
+
+            <div class="ref-slot">
+              <div class="ref-slot-header">
+                <span class="ref-slot-label">Overall</span>
+                <button class="ai-btn" onclick="analyseSlot('overall')">
+                  <span class="ai-icon">AI</span><span class="ai-spinner"></span> Analyse
+                </button>
+              </div>
+              <div class="ref-slot-body">
+                <div class="ref-image-area" onclick="triggerUpload('overall-img-input')" id="overall-img-area">
+                  <div class="upload-icon">+</div>
+                  <div class="upload-hint">Upload overall look reference</div>
+                </div>
+                <input type="file" id="overall-img-input" class="ref-upload-input" accept="image/*" onchange="handleImageUpload('overall', this)">
+                <textarea class="ref-notes" id="overall-notes" placeholder="Overall look notes..." onblur="saveLookField('overallNotes', this.value)"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TECHNIQUE NOTES -->
+        <div class="look-section">
+          <div class="look-section-title">
+            Technique Notes
+            <button class="btn btn-ghost btn-sm" onclick="compileTechniqueNotes()">Compile from AI</button>
+          </div>
+          <textarea class="technique-area" id="technique-notes" placeholder="Detailed technique plan for this look. Use AI Analyse buttons above then click Compile from AI, or write freely here..." onblur="saveLookField('techniqueNotes', this.value)"></textarea>
+        </div>
       </div>
 
       <!-- CALENDAR -->
@@ -349,13 +623,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
             <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--text);margin-bottom:14px;">Upcoming</div>
             <div class="upcoming-list" id="upcomingList"><div style="text-align:center;padding:32px 16px;color:var(--text-dim);font-size:13px">No upcoming bookings</div></div>
           </div>
-        </div>
-      </div>
-
-      <!-- MOOD BOARDS -->
-      <div class="page" id="page-moodboard">
-        <div class="board-grid" id="boardGrid">
-          <div class="board-new" onclick="openModal('modal-board')"><div style="font-size:28px">+</div><div style="font-size:13px">New Mood Board</div></div>
         </div>
       </div>
 
@@ -446,6 +713,17 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-new-look">
+  <div class="modal">
+    <div class="modal-title">New Look</div>
+    <div class="form-row"><label class="form-label">Look Name</label><input class="form-input" id="lk-name" type="text" placeholder="e.g. Wedding Look, Sangeet, Haldi..."></div>
+    <div class="form-row"><label class="form-label">Occasion</label><select class="form-select" id="lk-occasion"><option>Wedding</option><option>Sangeet</option><option>Haldi</option><option>Mehendi</option><option>Engagement</option><option>Reception</option><option>Party</option><option>Editorial</option><option>Photoshoot</option><option>Other</option></select></div>
+    <div class="form-row"><label class="form-label">Event Date</label><input class="form-input" id="lk-date" type="date"></div>
+    <div class="form-row"><label class="form-label">Notes</label><textarea class="form-textarea" id="lk-notes" placeholder="Any initial notes about this look..."></textarea></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-new-look')">Cancel</button><button class="btn btn-primary" onclick="saveLook()">Create Look</button></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-invoice">
   <div class="modal">
     <div class="modal-title">New Invoice</div>
@@ -482,40 +760,13 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-board">
-  <div class="modal">
-    <div class="modal-title">New Mood Board</div>
-    <div class="form-row"><label class="form-label">Board Name</label><input class="form-input" id="mb-name" type="text" placeholder="e.g. Priya Bridal Look"></div>
-    <div class="form-grid-2">
-      <div class="form-row">
-        <label class="form-label">Client</label>
-        <div class="ac-wrap">
-          <input class="form-input" id="mb-client" type="text" placeholder="Type to search clients..." autocomplete="off">
-          <div class="ac-dropdown" id="mb-ac"></div>
-        </div>
-      </div>
-      <div class="form-row"><label class="form-label">Occasion</label><select class="form-select" id="mb-occasion"><option>Bridal</option><option>Editorial</option><option>Party</option><option>Engagement</option><option>Casual</option><option>Sangeet</option><option>Reception</option></select></div>
-    </div>
-    <div class="form-row">
-      <label class="form-label">Colour Palette (pick 4)</label>
-      <div style="display:flex;gap:10px;align-items:center;margin-top:6px">
-        <input type="color" id="mb-c1" value="#f5e6d3" style="width:44px;height:44px;border:none;border-radius:8px;cursor:pointer;background:none;padding:2px">
-        <input type="color" id="mb-c2" value="#c9a97a" style="width:44px;height:44px;border:none;border-radius:8px;cursor:pointer;background:none;padding:2px">
-        <input type="color" id="mb-c3" value="#8b6914" style="width:44px;height:44px;border:none;border-radius:8px;cursor:pointer;background:none;padding:2px">
-        <input type="color" id="mb-c4" value="#3d2b1f" style="width:44px;height:44px;border:none;border-radius:8px;cursor:pointer;background:none;padding:2px">
-      </div>
-    </div>
-    <div class="form-row"><label class="form-label">Look Notes</label><textarea class="form-textarea" id="mb-notes" placeholder="Describe the look, inspo, products..."></textarea></div>
-    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-board')">Cancel</button><button class="btn btn-primary" onclick="saveBoard()">Create Board</button></div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, getDoc, getDocs, onSnapshot, serverTimestamp, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC2oOkHk2KEOV1JsQIxWxwYY9Ju1Y-WW5Y",
@@ -529,115 +780,126 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 const gProvider = new GoogleAuthProvider();
 
-let currentUser = null;
-let unsubs = [];
-let allClients = [], allBookings = [], allInvoices = [], allExpenses = [], allBoards = [];
+var currentUser = null;
+var unsubs = [];
+var allClients = [], allBookings = [], allInvoices = [], allExpenses = [];
+var currentClientId = null;
+var currentLookId = null;
+var currentLookData = null;
+var allLooks = [];
 
-const $ = function(id) { return document.getElementById(id); };
-const fmt = function(n) { return "Rs " + Number(n || 0).toLocaleString("en-IN"); };
-const todayStr = function() { return new Date().toISOString().split("T")[0]; };
+var $ = function(id) { return document.getElementById(id); };
+var fmt = function(n) { return "Rs " + Number(n || 0).toLocaleString("en-IN"); };
+var todayStr = function() { return new Date().toISOString().split("T")[0]; };
 
 function initials(name) {
   return name.trim().split(/\s+/).map(function(w) { return w[0]; }).join("").toUpperCase().slice(0, 2);
 }
-
 function avatarColor(name) {
   var colors = ["#c9a97a","#d4788a","#7ab894","#7aaad4","#b07ae8","#e87a7a","#78c8d4"];
   var h = 0;
   for (var i = 0; i < name.length; i++) { h = (h * 31 + name.charCodeAt(i)) % colors.length; }
   return colors[h];
 }
-
 function showToast(msg, isErr) {
   var t = $("toast");
-  t.textContent = (isErr ? "Error: " : "Done: ") + msg;
+  t.textContent = (isErr ? "Error: " : "") + msg;
   t.className = "toast" + (isErr ? " error" : "");
   t.classList.add("show");
   setTimeout(function() { t.classList.remove("show"); }, 2800);
 }
-
 function openModal(id) { $(id).classList.add("open"); }
 function closeModal(id) { $(id).classList.remove("open"); }
 window.openModal = openModal;
 window.closeModal = closeModal;
-
 document.querySelectorAll(".modal-overlay").forEach(function(o) {
   o.addEventListener("click", function(e) { if (e.target === o) o.classList.remove("open"); });
 });
 
-// AUTH
-window.switchTab = function(tab) {
-  $("tabLogin").classList.toggle("active", tab === "login");
-  $("tabSignup").classList.toggle("active", tab === "signup");
-  $("authName").style.display = tab === "signup" ? "block" : "none";
-  $("authSubmitBtn").textContent = tab === "login" ? "Sign In" : "Create Account";
-  $("authError").textContent = "";
-};
+// PUBLIC VIEW CHECK
+var urlParams = new URLSearchParams(window.location.search);
+var publicLookId = urlParams.get("look");
+var publicReportId = urlParams.get("report");
 
-window.handleEmailAuth = async function() {
-  var email = $("authEmail").value.trim();
-  var pass = $("authPassword").value;
-  var name = $("authName").value.trim();
-  var isSignup = $("tabSignup").classList.contains("active");
-  $("authError").textContent = "";
-  $("authSubmitBtn").disabled = true;
-  try {
-    if (isSignup) {
-      if (!name) { $("authError").textContent = "Please enter your name."; $("authSubmitBtn").disabled = false; return; }
-      var cred = await createUserWithEmailAndPassword(auth, email, pass);
-      await updateProfile(cred.user, { displayName: name });
-    } else {
-      await signInWithEmailAndPassword(auth, email, pass);
-    }
-  } catch(e) {
-    $("authError").textContent = e.message.replace("Firebase: ", "").replace(/\(auth\/.*\)\.?/, "").trim();
-    $("authSubmitBtn").disabled = false;
-  }
-};
-
-window.handleGoogleAuth = async function() {
-  try { await signInWithPopup(auth, gProvider); }
-  catch(e) { $("authError").textContent = e.message; }
-};
-
-window.handleSignOut = async function() {
-  unsubs.forEach(function(u) { u(); });
-  unsubs = [];
-  await signOut(auth);
-};
-
-// Failsafe timeout
-var authTimeout = setTimeout(function() {
+if (publicLookId) {
   $("loadingScreen").style.display = "none";
-  $("authScreen").style.display = "flex";
-}, 8000);
+  $("publicView").classList.add("visible");
+  loadPublicLook(publicLookId);
+} else {
+  // AUTH
+  window.switchTab = function(tab) {
+    $("tabLogin").classList.toggle("active", tab === "login");
+    $("tabSignup").classList.toggle("active", tab === "signup");
+    $("authName").style.display = tab === "signup" ? "block" : "none";
+    $("authSubmitBtn").textContent = tab === "login" ? "Sign In" : "Create Account";
+    $("authError").textContent = "";
+  };
 
-onAuthStateChanged(auth, function(user) {
-  clearTimeout(authTimeout);
-  $("loadingScreen").style.display = "none";
-  if (user) {
-    currentUser = user;
-    $("authScreen").style.display = "none";
-    $("appShell").classList.add("visible");
-    var name = user.displayName || user.email.split("@")[0];
-    $("sidebarName").textContent = name;
-    $("pageTitle").innerHTML = "Good morning, <span>" + name.split(" ")[0] + "</span>";
-    $("topbarAction").dataset.modal = "modal-booking";
-    if (user.photoURL) {
-      $("sidebarAvatar").innerHTML = '<img src="' + user.photoURL + '" alt="">';
-    } else {
-      $("sidebarAvatar").textContent = initials(name);
+  window.handleEmailAuth = async function() {
+    var email = $("authEmail").value.trim();
+    var pass = $("authPassword").value;
+    var name = $("authName").value.trim();
+    var isSignup = $("tabSignup").classList.contains("active");
+    $("authError").textContent = "";
+    $("authSubmitBtn").disabled = true;
+    try {
+      if (isSignup) {
+        if (!name) { $("authError").textContent = "Please enter your name."; $("authSubmitBtn").disabled = false; return; }
+        var cred = await createUserWithEmailAndPassword(auth, email, pass);
+        await updateProfile(cred.user, { displayName: name });
+      } else {
+        await signInWithEmailAndPassword(auth, email, pass);
+      }
+    } catch(e) {
+      $("authError").textContent = e.message.replace("Firebase: ", "").replace(/\(auth\/.*\)\.?/, "").trim();
+      $("authSubmitBtn").disabled = false;
     }
-    setupListeners();
-    renderCalendar();
-  } else {
-    currentUser = null;
+  };
+
+  window.handleGoogleAuth = async function() {
+    try { await signInWithPopup(auth, gProvider); }
+    catch(e) { $("authError").textContent = e.message; }
+  };
+
+  window.handleSignOut = async function() {
+    unsubs.forEach(function(u) { u(); });
+    unsubs = [];
+    await signOut(auth);
+  };
+
+  var authTimeout = setTimeout(function() {
+    $("loadingScreen").style.display = "none";
     $("authScreen").style.display = "flex";
-    $("appShell").classList.remove("visible");
-  }
-});
+  }, 8000);
+
+  onAuthStateChanged(auth, function(user) {
+    clearTimeout(authTimeout);
+    $("loadingScreen").style.display = "none";
+    if (user) {
+      currentUser = user;
+      $("authScreen").style.display = "none";
+      $("appShell").classList.add("visible");
+      var name = user.displayName || user.email.split("@")[0];
+      $("sidebarName").textContent = name;
+      $("pageTitle").innerHTML = "Good morning, <span>" + name.split(" ")[0] + "</span>";
+      $("topbarAction").dataset.modal = "modal-booking";
+      if (user.photoURL) {
+        $("sidebarAvatar").innerHTML = '<img src="' + user.photoURL + '" alt="">';
+      } else {
+        $("sidebarAvatar").textContent = initials(name);
+      }
+      setupListeners();
+      renderCalendar();
+    } else {
+      currentUser = null;
+      $("authScreen").style.display = "flex";
+      $("appShell").classList.remove("visible");
+    }
+  });
+}
 
 function col(name) { return collection(db, "users", currentUser.uid, name); }
 function docRef(colName, id) { return doc(db, "users", currentUser.uid, colName, id); }
@@ -651,39 +913,29 @@ function setupListeners() {
   unsubs.push(onSnapshot(col("bookings"), function(snap) {
     allBookings = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); })
       .sort(function(a, b) { return a.date > b.date ? 1 : -1; });
-    renderUpcoming();
-    renderCalendar();
-    updateDashStats();
-    updateDashBookings();
+    renderUpcoming(); renderCalendar(); updateDashStats(); updateDashBookings();
   }));
   unsubs.push(onSnapshot(col("invoices"), function(snap) {
     allInvoices = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
-    renderInvoices();
-    renderPayments();
-    updateDashStats();
-    updateDashInvoices();
+    renderInvoices(); renderPayments(); updateDashStats(); updateDashInvoices();
   }));
   unsubs.push(onSnapshot(col("expenses"), function(snap) {
     allExpenses = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); })
       .sort(function(a, b) { return b.date > a.date ? 1 : -1; });
-    renderExpenses();
-    updateExpenseSummary();
-  }));
-  unsubs.push(onSnapshot(col("boards"), function(snap) {
-    allBoards = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
-    renderBoards();
+    renderExpenses(); updateExpenseSummary();
   }));
 }
 
 // NAVIGATION
 var pageCfg = {
   dashboard: { title: null, btn: "+ New Booking", modal: "modal-booking" },
-  clients:   { title: "<span>Clients</span>", btn: "+ Add Client", modal: "modal-client" },
-  calendar:  { title: "<span>Bookings</span>", btn: "+ New Booking", modal: "modal-booking" },
-  moodboard: { title: "<span>Mood Boards</span>", btn: "+ New Board", modal: "modal-board" },
-  invoices:  { title: "<span>Invoices</span>", btn: "+ New Invoice", modal: "modal-invoice" },
-  payments:  { title: "<span>Payments</span>", btn: null, modal: null },
-  expenses:  { title: "<span>Expenses</span>", btn: "+ Log Expense", modal: "modal-expense" }
+  clients: { title: "<span>Clients</span>", btn: "+ Add Client", modal: "modal-client" },
+  "client-detail": { title: "<span>Client</span>", btn: null, modal: null },
+  "look-detail": { title: "<span>Look</span>", btn: null, modal: null },
+  calendar: { title: "<span>Bookings</span>", btn: "+ New Booking", modal: "modal-booking" },
+  invoices: { title: "<span>Invoices</span>", btn: "+ New Invoice", modal: "modal-invoice" },
+  payments: { title: "<span>Payments</span>", btn: null, modal: null },
+  expenses: { title: "<span>Expenses</span>", btn: "+ Log Expense", modal: "modal-expense" }
 };
 
 window.navigate = function(page, el) {
@@ -692,14 +944,14 @@ window.navigate = function(page, el) {
   $("page-" + page).classList.add("active");
   if (el) el.classList.add("active");
   var cfg = pageCfg[page];
-  if (cfg.title) {
+  if (cfg && cfg.title) {
     $("pageTitle").innerHTML = cfg.title;
-  } else {
+  } else if (!cfg || !cfg.title) {
     var n = currentUser ? (currentUser.displayName || currentUser.email.split("@")[0]) : "";
     $("pageTitle").innerHTML = "Good morning, <span>" + n.split(" ")[0] + "</span>";
   }
   var btn = $("topbarAction");
-  if (cfg.btn) { btn.textContent = cfg.btn; btn.style.display = ""; btn.dataset.modal = cfg.modal || ""; }
+  if (cfg && cfg.btn) { btn.textContent = cfg.btn; btn.style.display = ""; btn.dataset.modal = cfg.modal || ""; }
   else { btn.style.display = "none"; }
 };
 
@@ -715,7 +967,6 @@ function acShow(inputEl, dropId) {
   var matches = q.length === 0
     ? allClients.slice(0, 8)
     : allClients.filter(function(c) { return c.name.toLowerCase().indexOf(q) !== -1; }).slice(0, 8);
-
   if (!matches.length) {
     drop.innerHTML = '<div class="ac-empty">No clients found</div>';
   } else {
@@ -731,15 +982,8 @@ function acShow(inputEl, dropId) {
 
 document.addEventListener("click", function(e) {
   var opt = e.target.closest(".ac-option");
-  if (opt) {
-    e.preventDefault();
-    $(opt.dataset.input).value = opt.dataset.name;
-    $(opt.dataset.drop).classList.remove("open");
-    return;
-  }
-  if (!e.target.closest(".ac-wrap")) {
-    document.querySelectorAll(".ac-dropdown").forEach(function(d) { d.classList.remove("open"); });
-  }
+  if (opt) { e.preventDefault(); $(opt.dataset.input).value = opt.dataset.name; $(opt.dataset.drop).classList.remove("open"); return; }
+  if (!e.target.closest(".ac-wrap")) { document.querySelectorAll(".ac-dropdown").forEach(function(d) { d.classList.remove("open"); }); }
 });
 
 function setupAc(inputId, dropId) {
@@ -761,16 +1005,13 @@ function setupAc(inputId, dropId) {
     if (opts[idx]) opts[idx].classList.add("highlighted");
   });
 }
-
 setupAc("bk-client", "bk-ac");
 setupAc("inv-client", "inv-ac");
-setupAc("mb-client", "mb-ac");
 
-// DASHBOARD STATS
+// DASHBOARD
 function updateDashStats() {
   var mStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split("T")[0];
-  var rev = allInvoices.filter(function(i) { return i.status === "paid" && (i.paidDate || "") >= mStart; })
-    .reduce(function(s, i) { return s + Number(i.amount || 0); }, 0);
+  var rev = allInvoices.filter(function(i) { return i.status === "paid" && (i.paidDate || "") >= mStart; }).reduce(function(s, i) { return s + Number(i.amount || 0); }, 0);
   $("stat-revenue").textContent = fmt(rev);
   $("stat-revenue-sub").textContent = rev > 0 ? "This month" : "No revenue yet";
   var upcoming = allBookings.filter(function(b) { return b.date >= todayStr(); }).length;
@@ -781,7 +1022,6 @@ function updateDashStats() {
   $("stat-pending").textContent = fmt(pend);
   $("stat-pending-sub").textContent = pend > 0 ? allInvoices.filter(function(i) { return i.status !== "paid"; }).length + " outstanding" : "All clear";
 }
-
 function updateDashBookings() {
   var rows = allBookings.filter(function(b) { return b.date >= todayStr(); }).slice(0, 4);
   var tb = $("dash-bookings");
@@ -791,7 +1031,6 @@ function updateDashBookings() {
     return "<tr><td><span class='client-name'>" + b.client + "</span></td><td>" + b.service + "</td><td>" + b.date + "</td><td>" + badge + "</td></tr>";
   }).join("");
 }
-
 function updateDashInvoices() {
   var rows = allInvoices.slice().sort(function(a, b) { return (b.createdAt ? b.createdAt.seconds : 0) - (a.createdAt ? a.createdAt.seconds : 0); }).slice(0, 4);
   var tb = $("dash-invoices");
@@ -807,19 +1046,7 @@ window.saveClient = async function() {
   var name = $("cl-name").value.trim();
   if (!name) { showToast("Client name is required", true); return; }
   try {
-    await addDoc(col("clients"), {
-      name: name,
-      phone: $("cl-phone").value.trim(),
-      email: $("cl-email").value.trim(),
-      tone: $("cl-tone").value,
-      type: $("cl-type").value,
-      allergies: $("cl-allergies").value.trim(),
-      looks: $("cl-looks").value.split(",").map(function(s) { return s.trim(); }).filter(Boolean),
-      notes: $("cl-notes").value.trim(),
-      color: avatarColor(name),
-      initials: initials(name),
-      createdAt: serverTimestamp()
-    });
+    await addDoc(col("clients"), { name: name, phone: $("cl-phone").value.trim(), email: $("cl-email").value.trim(), tone: $("cl-tone").value, type: $("cl-type").value, allergies: $("cl-allergies").value.trim(), looks: $("cl-looks").value.split(",").map(function(s) { return s.trim(); }).filter(Boolean), notes: $("cl-notes").value.trim(), color: avatarColor(name), initials: initials(name), createdAt: serverTimestamp() });
     closeModal("modal-client");
     ["cl-name","cl-phone","cl-email","cl-allergies","cl-looks","cl-notes"].forEach(function(id) { $(id).value = ""; });
     showToast("Client added!");
@@ -832,50 +1059,379 @@ window.deleteClient = async function(id) {
   showToast("Client removed");
 };
 
+window.openClientDetail = function(clientId) {
+  currentClientId = clientId;
+  var client = allClients.find(function(c) { return c.id === clientId; });
+  if (!client) return;
+  var color = client.color || "#c9a97a";
+  $("detail-avatar").textContent = client.initials || "?";
+  $("detail-avatar").style.background = color + "20";
+  $("detail-avatar").style.color = color;
+  $("detail-name").textContent = client.name;
+  $("detail-meta").textContent = (client.tone || "") + " skin " + (client.type ? "(" + client.type + ")" : "") + (client.phone ? " • " + client.phone : "");
+  $("detail-allergy").textContent = client.allergies ? "Allergy: " + client.allergies : "";
+  $("pageTitle").innerHTML = "<span>" + client.name + "</span>";
+  $("topbarAction").style.display = "none";
+  loadLooks(clientId);
+  document.querySelectorAll(".page").forEach(function(p) { p.classList.remove("active"); });
+  document.querySelectorAll(".nav-item").forEach(function(n) { n.classList.remove("active"); });
+  $("page-client-detail").classList.add("active");
+};
+
 function renderClients(list) {
   var g = $("clientsGrid");
   if (!list.length) { g.innerHTML = '<div class="empty"><div class="empty-icon">o</div><div class="empty-text">No clients yet</div></div>'; return; }
   g.innerHTML = list.map(function(c) {
-    return '<div class="client-card">' +
+    var looksHtml = '';
+    return '<div class="client-card" onclick="openClientDetail(\'' + c.id + '\')">' +
       '<div class="client-card-header">' +
       '<div class="client-avatar" style="background:' + c.color + '20;color:' + c.color + '">' + c.initials + '</div>' +
-      '<div class="client-card-actions"><button class="icon-btn" onclick="deleteClient(\'' + c.id + '\')" title="Delete">X</button></div>' +
+      '<div class="client-card-actions"><button class="icon-btn" onclick="event.stopPropagation();deleteClient(\'' + c.id + '\')" title="Delete">X</button></div>' +
       '</div>' +
       '<div class="client-card-name">' + c.name + '</div>' +
       (c.phone ? '<div class="client-card-detail">' + c.phone + '</div>' : '') +
       '<div class="client-card-detail">' + (c.tone || "") + ' ' + (c.type || "") + ' skin</div>' +
       (c.allergies ? '<div class="client-card-detail" style="color:var(--rose);font-size:11px">! ' + c.allergies + '</div>' : '') +
       '<div class="client-tags">' + (c.looks || []).map(function(t) { return '<span class="tag">' + t + '</span>'; }).join("") + '</div>' +
+      '<div class="looks-summary"><span class="looks-count">Tap to manage looks</span></div>' +
       '</div>';
   }).join("");
 }
 
 window.filterClients = function(q) {
-  var filtered = allClients.filter(function(c) {
-    return c.name.toLowerCase().indexOf(q.toLowerCase()) !== -1 ||
-      (c.tone || "").toLowerCase().indexOf(q.toLowerCase()) !== -1 ||
-      (c.looks || []).some(function(t) { return t.toLowerCase().indexOf(q.toLowerCase()) !== -1; });
+  renderClients(allClients.filter(function(c) {
+    return c.name.toLowerCase().indexOf(q.toLowerCase()) !== -1 || (c.tone || "").toLowerCase().indexOf(q.toLowerCase()) !== -1 || (c.looks || []).some(function(t) { return t.toLowerCase().indexOf(q.toLowerCase()) !== -1; });
+  }));
+};
+
+// LOOKS
+async function loadLooks(clientId) {
+  var looksCol = collection(db, "users", currentUser.uid, "clients", clientId, "looks");
+  var snap = await getDocs(looksCol);
+  allLooks = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
+  renderLooksGrid(allLooks);
+}
+
+function renderLooksGrid(looks) {
+  var g = $("looksGrid");
+  var newCard = '<div class="look-new-card" onclick="openModal(\'modal-new-look\')" style="cursor:pointer"><div style="font-size:28px">+</div><div style="font-size:13px;color:inherit">New Look</div></div>';
+  if (!looks.length) { g.innerHTML = newCard; return; }
+  g.innerHTML = looks.map(function(lk) {
+    var statusColor = lk.status === "approved" ? "var(--green)" : lk.status === "shared" ? "var(--blue)" : "var(--text-dim)";
+    var statusLabel = lk.status === "approved" ? "Approved" : lk.status === "shared" ? "Shared" : "Draft";
+    var previewImg = lk.outfitImgUrl || lk.overallImgUrl || "";
+    return '<div class="look-card" onclick="openLookDetail(\'' + lk.id + '\')">' +
+      '<div class="look-card-preview">' +
+      (previewImg ? '<img src="' + previewImg + '" alt="">' : '<div class="look-card-preview-placeholder">o</div>') +
+      '</div>' +
+      '<div class="look-card-body">' +
+      '<div class="look-card-name">' + lk.name + '</div>' +
+      '<div class="look-card-meta">' + (lk.occasion || "") + (lk.date ? " • " + lk.date : "") + '</div>' +
+      '<div class="look-card-status"><span class="badge" style="background:' + statusColor + '20;color:' + statusColor + '">' + statusLabel + '</span></div>' +
+      '</div></div>';
+  }).join("") + newCard;
+}
+
+window.saveLook = async function() {
+  var name = $("lk-name").value.trim();
+  if (!name || !currentClientId) { showToast("Look name is required", true); return; }
+  try {
+    var looksCol = collection(db, "users", currentUser.uid, "clients", currentClientId, "looks");
+    await addDoc(looksCol, { name: name, occasion: $("lk-occasion").value, date: $("lk-date").value, notes: $("lk-notes").value.trim(), status: "draft", createdAt: serverTimestamp() });
+    closeModal("modal-new-look");
+    ["lk-name","lk-date","lk-notes"].forEach(function(id) { $(id).value = ""; });
+    showToast("Look created!");
+    loadLooks(currentClientId);
+  } catch(e) { showToast(e.message, true); }
+};
+
+window.openLookDetail = async function(lookId) {
+  currentLookId = lookId;
+  var looksCol = collection(db, "users", currentUser.uid, "clients", currentClientId, "looks");
+  var snap = await getDoc(doc(db, "users", currentUser.uid, "clients", currentClientId, "looks", lookId));
+  if (!snap.exists()) { showToast("Look not found", true); return; }
+  currentLookData = Object.assign({ id: snap.id }, snap.data());
+  var lk = currentLookData;
+  var client = allClients.find(function(c) { return c.id === currentClientId; });
+
+  $("look-detail-title").textContent = lk.name;
+  $("look-detail-client").textContent = client ? client.name : "";
+  $("pageTitle").innerHTML = "<span>" + lk.name + "</span>";
+  $("topbarAction").style.display = "none";
+
+  // Status bar
+  updateStatusBar(lk.status || "draft");
+
+  // Populate fields
+  $("outfit-desc").value = lk.outfitDesc || "";
+  $("outfit-notes").value = lk.outfitNotes || "";
+  $("eyes-notes").value = lk.eyesNotes || "";
+  $("lips-notes").value = lk.lipsNotes || "";
+  $("skin-notes").value = lk.skinNotes || "";
+  $("overall-notes").value = lk.overallNotes || "";
+  $("technique-notes").value = lk.techniqueNotes || "";
+
+  // Populate images
+  populateImageArea("outfit-img-area", lk.outfitImgUrl);
+  populateImageArea("eyes-img-area", lk.eyesImgUrl);
+  populateImageArea("lips-img-area", lk.lipsImgUrl);
+  populateImageArea("skin-img-area", lk.skinImgUrl);
+  populateImageArea("overall-img-area", lk.overallImgUrl);
+
+  document.querySelectorAll(".page").forEach(function(p) { p.classList.remove("active"); });
+  document.querySelectorAll(".nav-item").forEach(function(n) { n.classList.remove("active"); });
+  $("page-look-detail").classList.add("active");
+};
+
+function populateImageArea(areaId, url) {
+  var area = $(areaId);
+  if (!area) return;
+  if (url) {
+    area.innerHTML = '<img src="' + url + '" alt="">';
+  } else {
+    var slot = areaId.replace("-img-area", "");
+    var labels = { outfit: "Upload outfit photo", eyes: "Upload eye reference", lips: "Upload lip reference", skin: "Upload skin reference", overall: "Upload overall look" };
+    area.innerHTML = '<div class="upload-icon">+</div><div class="upload-hint">' + (labels[slot] || "Upload image") + '</div>';
+  }
+}
+
+function updateStatusBar(status) {
+  var steps = $("look-status-bar").querySelectorAll(".status-step");
+  var order = ["draft", "shared", "approved"];
+  var idx = order.indexOf(status);
+  steps.forEach(function(s, i) {
+    s.classList.remove("active", "done");
+    if (i === idx) s.classList.add("active");
+    else if (i < idx) s.classList.add("done");
   });
-  renderClients(filtered);
+}
+
+window.setLookStatus = async function(status) {
+  if (!currentLookId || !currentClientId) return;
+  await updateDoc(doc(db, "users", currentUser.uid, "clients", currentClientId, "looks", currentLookId), { status: status });
+  currentLookData.status = status;
+  updateStatusBar(status);
+  showToast("Status updated to " + status);
+};
+
+window.saveLookField = async function(field, value) {
+  if (!currentLookId || !currentClientId) return;
+  var update = {};
+  update[field] = value;
+  await updateDoc(doc(db, "users", currentUser.uid, "clients", currentClientId, "looks", currentLookId), update);
+  if (currentLookData) currentLookData[field] = value;
+};
+
+window.deleteLook = async function() {
+  if (!currentLookId || !currentClientId) return;
+  if (!confirm("Delete this look?")) return;
+  await deleteDoc(doc(db, "users", currentUser.uid, "clients", currentClientId, "looks", currentLookId));
+  showToast("Look deleted");
+  goBackToClient();
+};
+
+window.goBackToClient = function() {
+  currentLookId = null;
+  currentLookData = null;
+  openClientDetail(currentClientId);
+};
+
+window.triggerUpload = function(inputId) { $(inputId).click(); };
+
+window.handleImageUpload = async function(slot, input) {
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+  var areaId = slot + "-img-area";
+  var area = $(areaId);
+  area.innerHTML = '<div class="loading-spinner" style="margin:0 auto"></div>';
+
+  try {
+    var path = "users/" + currentUser.uid + "/looks/" + currentLookId + "/" + slot + "_" + Date.now() + "." + file.name.split(".").pop();
+    var sRef = storageRef(storage, path);
+    await uploadBytes(sRef, file);
+    var url = await getDownloadURL(sRef);
+    area.innerHTML = '<img src="' + url + '" alt="">';
+    var update = {};
+    update[slot + "ImgUrl"] = url;
+    await updateDoc(doc(db, "users", currentUser.uid, "clients", currentClientId, "looks", currentLookId), update);
+    if (currentLookData) currentLookData[slot + "ImgUrl"] = url;
+    showToast("Image uploaded!");
+  } catch(e) {
+    showToast("Upload failed: " + e.message, true);
+    populateImageArea(areaId, null);
+  }
+};
+
+// AI ANALYSIS
+window.analyseSlot = async function(slot) {
+  if (!currentLookData) return;
+  var imgUrl = currentLookData[slot + "ImgUrl"];
+  if (!imgUrl) { showToast("Please upload an image first", true); return; }
+
+  var btns = document.querySelectorAll(".ai-btn");
+  var clickedBtn = null;
+  btns.forEach(function(b) { if (b.getAttribute("onclick") && b.getAttribute("onclick").indexOf("'" + slot + "'") !== -1) { clickedBtn = b; } });
+  if (clickedBtn) clickedBtn.classList.add("loading");
+  if (clickedBtn) clickedBtn.disabled = true;
+
+  var client = allClients.find(function(c) { return c.id === currentClientId; });
+  var skinInfo = client ? "Client skin tone: " + (client.tone || "unknown") + ", skin type: " + (client.type || "unknown") + (client.allergies ? ", allergies: " + client.allergies : "") + "." : "";
+
+  var prompts = {
+    eyes: "You are an expert makeup artist. Analyse this eye makeup reference image. Describe in 3-5 concise bullet points: the eye shadow technique and colours, liner style, lash type, any special effects. Be specific and practical for a makeup artist to replicate. " + skinInfo,
+    lips: "You are an expert makeup artist. Analyse this lip makeup reference image. Describe in 3-5 concise bullet points: the lip colour family, finish (matte/gloss/satin/metallic), any ombre or gradient, liner style, shape corrections. Be specific and practical. " + skinInfo,
+    skin: "You are an expert makeup artist. Analyse this skin/base makeup reference image. Describe in 3-5 concise bullet points: the base finish (dewy/matte/glass/satin), coverage level, highlight placement, any contouring, skin prep notes. Be specific and practical. " + skinInfo,
+    overall: "You are an expert makeup artist. Analyse this complete makeup look reference image. Give a concise overall summary in 4-6 bullet points covering the dominant vibe, eye focus, lip choice, skin finish, and any standout techniques. Be practical and actionable. " + skinInfo,
+    outfit: "You are an expert makeup artist. Analyse this outfit image. In 3-4 bullet points describe: the dominant colour palette of the outfit, the undertones (warm/cool/neutral), and suggest complementary makeup directions for eyes, lips, and skin finish. Flag any colour clashes to avoid."
+  };
+
+  var notesField = slot + "-notes";
+  if (slot === "outfit") notesField = "outfit-notes";
+
+  try {
+    var response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 500,
+        messages: [{
+          role: "user",
+          content: [
+            { type: "image", source: { type: "url", url: imgUrl } },
+            { type: "text", text: prompts[slot] }
+          ]
+        }]
+      })
+    });
+    var data = await response.json();
+    var text = data.content && data.content[0] ? data.content[0].text : "Could not analyse image.";
+    $(notesField).value = text;
+    await saveLookField(slot + "Notes" === "outfitNotes" ? "outfitNotes" : slot + "Notes", text);
+    if (slot === "outfit") await saveLookField("outfitNotes", text);
+    showToast("AI analysis complete!");
+  } catch(e) {
+    showToast("AI analysis failed: " + e.message, true);
+  } finally {
+    if (clickedBtn) { clickedBtn.classList.remove("loading"); clickedBtn.disabled = false; }
+  }
+};
+
+window.compileTechniqueNotes = function() {
+  if (!currentLookData) return;
+  var parts = [];
+  if (currentLookData.outfitNotes) parts.push("OUTFIT\n" + currentLookData.outfitNotes);
+  if (currentLookData.eyesNotes) parts.push("EYES\n" + currentLookData.eyesNotes);
+  if (currentLookData.lipsNotes) parts.push("LIPS\n" + currentLookData.lipsNotes);
+  if (currentLookData.skinNotes) parts.push("SKIN\n" + currentLookData.skinNotes);
+  if (currentLookData.overallNotes) parts.push("OVERALL\n" + currentLookData.overallNotes);
+  if (!parts.length) { showToast("No AI analysis found. Analyse reference images first.", true); return; }
+  var compiled = parts.join("\n\n");
+  $("technique-notes").value = compiled;
+  saveLookField("techniqueNotes", compiled);
+  showToast("Technique notes compiled!");
+};
+
+// SHARE LOOK
+window.shareLook = async function() {
+  if (!currentLookId || !currentClientId) return;
+  var shareId = currentLookId;
+  await updateDoc(doc(db, "users", currentUser.uid, "clients", currentClientId, "looks", currentLookId), { status: "shared", shareId: shareId, sharedUid: currentUser.uid, sharedClientId: currentClientId });
+  updateStatusBar("shared");
+  currentLookData.status = "shared";
+  var link = window.location.origin + window.location.pathname + "?look=" + currentLookId + "&uid=" + currentUser.uid + "&cid=" + currentClientId;
+  try { await navigator.clipboard.writeText(link); showToast("Link copied to clipboard!"); }
+  catch(e) { prompt("Copy this link to share with client:", link); }
+};
+
+// PUBLIC LOOK VIEW
+async function loadPublicLook(lookId) {
+  var uid = urlParams.get("uid");
+  var cid = urlParams.get("cid");
+  if (!uid || !cid) { $("pubContent").innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-dim)">Invalid link.</div>'; return; }
+  try {
+    var lookSnap = await getDoc(doc(db, "users", uid, "clients", cid, "looks", lookId));
+    var clientSnap = await getDoc(doc(db, "users", uid, "clients", cid));
+    if (!lookSnap.exists()) { $("pubContent").innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-dim)">Look not found.</div>'; return; }
+    var lk = Object.assign({ id: lookSnap.id }, lookSnap.data());
+    var cl = clientSnap.exists() ? Object.assign({ id: clientSnap.id }, clientSnap.data()) : {};
+    renderPublicLook(lk, cl, uid, cid);
+  } catch(e) {
+    $("pubContent").innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-dim)">Could not load look: ' + e.message + '</div>';
+  }
+}
+
+function renderPublicLook(lk, cl, uid, cid) {
+  var isApproved = lk.status === "approved";
+  var outfitImgHtml = lk.outfitImgUrl ? '<img src="' + lk.outfitImgUrl + '" alt="Outfit">' : '<div class="pub-outfit-placeholder">No outfit image</div>';
+  function refHtml(url, label, notes) {
+    return '<div class="pub-ref"><div class="pub-ref-label">' + label + '</div>' +
+      (url ? '<img src="' + url + '" alt="' + label + '">' : '<div class="pub-ref-placeholder">No image</div>') +
+      (notes ? '<div class="pub-ref-notes">' + notes + '</div>' : '') + '</div>';
+  }
+  var html = '<div class="pub-header">' +
+    '<div class="pub-logo">GlamDesk</div>' +
+    '<div class="pub-title">' + lk.name + '</div>' +
+    '<div class="pub-subtitle">' + (lk.occasion || "") + (lk.date ? " • " + lk.date : "") + '</div>' +
+    '</div>';
+
+  if (cl.name) {
+    html += '<div class="pub-client-info">' +
+      '<div class="pub-client-detail"><strong>Client</strong>' + cl.name + '</div>' +
+      (cl.tone ? '<div class="pub-client-detail"><strong>Skin</strong>' + cl.tone + ' ' + (cl.type || "") + '</div>' : '') +
+      (cl.allergies ? '<div class="pub-client-detail" style="color:var(--rose)"><strong>Allergy</strong>' + cl.allergies + '</div>' : '') +
+      '</div>';
+  }
+
+  if (lk.outfitDesc || lk.outfitImgUrl) {
+    html += '<div class="pub-look-section"><div class="pub-look-meta" style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Outfit</div>' +
+      '<div class="pub-outfit">' + outfitImgHtml + '<div class="pub-outfit-desc">' + (lk.outfitDesc || "No description provided") + '</div></div></div>';
+  }
+
+  html += '<div class="pub-look-section"><div class="pub-look-meta" style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Reference Images</div>' +
+    '<div class="pub-refs">' +
+    refHtml(lk.eyesImgUrl, "Eyes", lk.eyesNotes) +
+    refHtml(lk.lipsImgUrl, "Lips", lk.lipsNotes) +
+    refHtml(lk.skinImgUrl, "Skin", lk.skinNotes) +
+    refHtml(lk.overallImgUrl, "Overall", lk.overallNotes) +
+    '</div></div>';
+
+  if (lk.techniqueNotes) {
+    html += '<div class="pub-look-section"><div class="pub-look-meta" style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Technique Plan</div><div class="pub-technique">' + lk.techniqueNotes + '</div></div>';
+  }
+
+  if (isApproved) {
+    html += '<div class="pub-approve-area"><div class="pub-approved-badge">Approved</div><div style="font-size:13px;color:var(--text-muted);margin-top:12px">This look has been approved.</div></div>';
+  } else {
+    html += '<div class="pub-approve-area">' +
+      '<div class="pub-approve-title">Does this look right to you?</div>' +
+      '<div class="pub-approve-desc">Review the plan above and let your MUA know.</div>' +
+      '<div class="pub-approve-btns">' +
+      '<button class="pub-btn-approve" onclick="publicApprove(\'' + uid + '\',\'' + cid + '\',\'' + lk.id + '\')">Approve Look</button>' +
+      '<button class="pub-btn-changes" onclick="publicRequestChanges()">Request Changes</button>' +
+      '</div></div>';
+  }
+
+  $("pubContent").innerHTML = html;
+}
+
+window.publicApprove = async function(uid, cid, lookId) {
+  try {
+    await updateDoc(doc(db, "users", uid, "clients", cid, "looks", lookId), { status: "approved" });
+    document.querySelector(".pub-approve-area").innerHTML = '<div class="pub-approved-badge">Approved</div><div style="font-size:13px;color:var(--text-muted);margin-top:12px">Thank you! Your MUA has been notified.</div>';
+  } catch(e) { alert("Could not approve: " + e.message); }
+};
+
+window.publicRequestChanges = function() {
+  alert("Please contact your MUA directly on WhatsApp with your feedback.");
 };
 
 // BOOKINGS
 window.saveBooking = async function() {
-  var client = $("bk-client").value.trim();
-  var date = $("bk-date").value;
+  var client = $("bk-client").value.trim(), date = $("bk-date").value;
   if (!client || !date) { showToast("Client name and date are required", true); return; }
   try {
-    await addDoc(col("bookings"), {
-      client: client,
-      service: $("bk-service").value,
-      duration: $("bk-duration").value,
-      date: date,
-      time: $("bk-time").value,
-      location: $("bk-location").value.trim(),
-      status: $("bk-status").value,
-      notes: $("bk-notes").value.trim(),
-      createdAt: serverTimestamp()
-    });
+    await addDoc(col("bookings"), { client: client, service: $("bk-service").value, duration: $("bk-duration").value, date: date, time: $("bk-time").value, location: $("bk-location").value.trim(), status: $("bk-status").value, notes: $("bk-notes").value.trim(), createdAt: serverTimestamp() });
     closeModal("modal-booking");
     ["bk-client","bk-date","bk-time","bk-location","bk-notes"].forEach(function(id) { $(id).value = ""; });
     showToast("Booking saved!");
@@ -893,21 +1449,13 @@ function renderUpcoming() {
   var el = $("upcomingList");
   if (!rows.length) { el.innerHTML = '<div style="text-align:center;padding:32px 16px;color:var(--text-dim);font-size:13px">No upcoming bookings</div>'; return; }
   el.innerHTML = rows.map(function(b) {
-    return '<div class="appt-item">' +
-      '<button class="appt-delete" onclick="deleteBooking(\'' + b.id + '\')">X</button>' +
-      '<div class="appt-time">' + b.date + (b.time ? " " + b.time : "") + '</div>' +
-      '<div class="appt-client">' + b.client + '</div>' +
-      '<div class="appt-service">' + b.service + (b.duration ? " " + b.duration : "") + '</div>' +
-      '</div>';
+    return '<div class="appt-item"><button class="appt-delete" onclick="deleteBooking(\'' + b.id + '\')">X</button><div class="appt-time">' + b.date + (b.time ? " " + b.time : "") + '</div><div class="appt-client">' + b.client + '</div><div class="appt-service">' + b.service + (b.duration ? " " + b.duration : "") + '</div></div>';
   }).join("");
 }
 
-// CALENDAR
 var calDate = new Date();
-
 window.renderCalendar = function() {
-  var el = $("calDays");
-  var lbl = $("calMonthLabel");
+  var el = $("calDays"), lbl = $("calMonthLabel");
   if (!el) return;
   var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   lbl.textContent = months[calDate.getMonth()] + " " + calDate.getFullYear();
@@ -926,65 +1474,37 @@ window.renderCalendar = function() {
   }
   el.innerHTML = html;
 };
-
-window.changeMonth = function(dir) {
-  calDate = new Date(calDate.getFullYear(), calDate.getMonth() + dir, 1);
-  window.renderCalendar();
-};
+window.changeMonth = function(dir) { calDate = new Date(calDate.getFullYear(), calDate.getMonth() + dir, 1); window.renderCalendar(); };
 
 // INVOICES
 window.saveInvoice = async function() {
-  var client = $("inv-client").value.trim();
-  var amount = $("inv-amount").value;
+  var client = $("inv-client").value.trim(), amount = $("inv-amount").value;
   if (!client || !amount) { showToast("Client name and amount are required", true); return; }
   var status = $("inv-status").value;
   var num = "INV-" + String(allInvoices.length + 1).padStart(3, "0");
   try {
-    await addDoc(col("invoices"), {
-      invoiceNum: num,
-      client: client,
-      service: $("inv-service").value,
-      amount: Number(amount),
-      due: $("inv-due").value,
-      status: status,
-      notes: $("inv-notes").value.trim(),
-      date: todayStr(),
-      paidDate: status === "paid" ? todayStr() : null,
-      createdAt: serverTimestamp()
-    });
+    await addDoc(col("invoices"), { invoiceNum: num, client: client, service: $("inv-service").value, amount: Number(amount), due: $("inv-due").value, status: status, notes: $("inv-notes").value.trim(), date: todayStr(), paidDate: status === "paid" ? todayStr() : null, createdAt: serverTimestamp() });
     closeModal("modal-invoice");
     ["inv-client","inv-amount","inv-due","inv-notes"].forEach(function(id) { $(id).value = ""; });
     showToast("Invoice created!");
   } catch(e) { showToast(e.message, true); }
 };
-
 window.deleteInvoice = async function(id) {
   if (!confirm("Delete this invoice?")) return;
   await deleteDoc(docRef("invoices", id));
   showToast("Invoice deleted");
 };
-
 window.markPaid = async function(id) {
   await updateDoc(docRef("invoices", id), { status: "paid", paidDate: todayStr() });
   showToast("Marked as paid!");
 };
-
 function renderInvoices() {
   var el = $("invoiceList");
   if (!allInvoices.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">o</div><div class="empty-text">No invoices yet</div></div>'; return; }
-  var sorted = allInvoices.slice().sort(function(a, b) { return (b.createdAt ? b.createdAt.seconds : 0) - (a.createdAt ? a.createdAt.seconds : 0); });
-  el.innerHTML = sorted.map(function(inv) {
+  el.innerHTML = allInvoices.slice().sort(function(a, b) { return (b.createdAt ? b.createdAt.seconds : 0) - (a.createdAt ? a.createdAt.seconds : 0); }).map(function(inv) {
     var badge = inv.status === "paid" ? '<span class="badge badge-green">Paid</span>' : inv.status === "overdue" ? '<span class="badge badge-rose">Overdue</span>' : '<span class="badge badge-blue">Sent</span>';
-    var markPaidBtn = inv.status !== "paid" ? '<button class="btn btn-ghost btn-sm" onclick="markPaid(\'' + inv.id + '\')">Mark Paid</button>' : "";
-    return '<div class="invoice-item">' +
-      '<div class="invoice-id">' + (inv.invoiceNum || "INV") + '</div>' +
-      '<div style="flex:1"><div class="client-name">' + inv.client + '</div><div style="font-size:12px;color:var(--text-dim)">' + inv.service + '</div></div>' +
-      '<div style="font-size:12px;color:var(--text-dim);width:90px;flex-shrink:0">' + (inv.date || "") + '</div>' +
-      '<div class="invoice-amount">' + fmt(inv.amount) + '</div>' +
-      '<div style="width:80px;text-align:right;flex-shrink:0">' + badge + '</div>' +
-      markPaidBtn +
-      '<button class="icon-btn" onclick="deleteInvoice(\'' + inv.id + '\')">X</button>' +
-      '</div>';
+    var mp = inv.status !== "paid" ? '<button class="btn btn-ghost btn-sm" onclick="markPaid(\'' + inv.id + '\')">Mark Paid</button>' : "";
+    return '<div class="invoice-item"><div class="invoice-id">' + (inv.invoiceNum || "INV") + '</div><div style="flex:1"><div class="client-name">' + inv.client + '</div><div style="font-size:12px;color:var(--text-dim)">' + inv.service + '</div></div><div style="font-size:12px;color:var(--text-dim);width:90px;flex-shrink:0">' + (inv.date || "") + '</div><div class="invoice-amount">' + fmt(inv.amount) + '</div><div style="width:80px;text-align:right;flex-shrink:0">' + badge + '</div>' + mp + '<button class="icon-btn" onclick="deleteInvoice(\'' + inv.id + '\')">X</button></div>';
   }).join("");
 }
 
@@ -998,115 +1518,44 @@ function renderPayments() {
   $("pay-total").textContent = fmt(total);
   $("pay-month").textContent = fmt(mPaid);
   $("pay-outstanding").textContent = fmt(outstanding);
-
-  var now = new Date();
-  var mNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var now = new Date(), mNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   var months = [];
-  for (var i = 5; i >= 0; i--) {
-    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    months.push({ label: mNames[d.getMonth()], y: d.getFullYear(), m: d.getMonth() });
-  }
-  var revs = months.map(function(m) {
-    return paid.filter(function(i) {
-      var d = new Date(i.paidDate || i.date || "1970-01-01");
-      return d.getFullYear() === m.y && d.getMonth() === m.m;
-    }).reduce(function(s, i) { return s + Number(i.amount || 0); }, 0);
-  });
+  for (var i = 5; i >= 0; i--) { var d = new Date(now.getFullYear(), now.getMonth() - i, 1); months.push({ label: mNames[d.getMonth()], y: d.getFullYear(), m: d.getMonth() }); }
+  var revs = months.map(function(m) { return paid.filter(function(i) { var d = new Date(i.paidDate || i.date || "1970-01-01"); return d.getFullYear() === m.y && d.getMonth() === m.m; }).reduce(function(s, i) { return s + Number(i.amount || 0); }, 0); });
   var max = Math.max.apply(null, revs.concat([1]));
-  $("paymentChart").innerHTML = revs.map(function(v, i) {
-    var h = Math.round(v / max * 100);
-    var color = i === revs.length - 1 ? "var(--accent)" : "var(--surface3)";
-    return '<div class="bar-group"><div class="bar" style="height:' + h + '%;background:' + color + '" title="' + fmt(v) + '"></div></div>';
-  }).join("");
-  $("paymentChartLabels").innerHTML = months.map(function(m, i) {
-    return '<div style="flex:1;text-align:center;font-size:10px;color:' + (i === months.length - 1 ? "var(--accent)" : "var(--text-dim)") + '">' + m.label + '</div>';
-  }).join("");
-
+  $("paymentChart").innerHTML = revs.map(function(v, i) { return '<div class="bar-group"><div class="bar" style="height:' + Math.round(v / max * 100) + '%;background:' + (i === revs.length - 1 ? "var(--accent)" : "var(--surface3)") + '" title="' + fmt(v) + '"></div></div>'; }).join("");
+  $("paymentChartLabels").innerHTML = months.map(function(m, i) { return '<div style="flex:1;text-align:center;font-size:10px;color:' + (i === months.length - 1 ? "var(--accent)" : "var(--text-dim)") + '">' + m.label + '</div>'; }).join("");
   var tb = $("paidInvoicesBody");
   if (!paid.length) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-dim)">No payments yet</td></tr>'; return; }
-  tb.innerHTML = paid.slice().sort(function(a, b) { return (b.paidDate || b.date || "") > (a.paidDate || a.date || "") ? 1 : -1; }).map(function(i) {
-    return "<tr><td><span class='client-name'>" + i.client + "</span></td><td>" + i.service + "</td><td>" + (i.paidDate || i.date || "") + "</td><td style='text-align:right;font-family:\"Cormorant Garamond\",serif;font-size:16px'>" + fmt(i.amount) + "</td></tr>";
-  }).join("");
+  tb.innerHTML = paid.slice().sort(function(a, b) { return (b.paidDate || b.date || "") > (a.paidDate || a.date || "") ? 1 : -1; }).map(function(i) { return "<tr><td><span class='client-name'>" + i.client + "</span></td><td>" + i.service + "</td><td>" + (i.paidDate || i.date || "") + "</td><td style='text-align:right'>" + fmt(i.amount) + "</td></tr>"; }).join("");
 }
 
 // EXPENSES
 window.saveExpense = async function() {
-  var item = $("ex-item").value.trim();
-  var amount = $("ex-amount").value;
+  var item = $("ex-item").value.trim(), amount = $("ex-amount").value;
   if (!item || !amount) { showToast("Item and amount are required", true); return; }
   try {
-    await addDoc(col("expenses"), {
-      item: item,
-      category: $("ex-category").value,
-      amount: Number(amount),
-      date: $("ex-date").value || todayStr(),
-      createdAt: serverTimestamp()
-    });
+    await addDoc(col("expenses"), { item: item, category: $("ex-category").value, amount: Number(amount), date: $("ex-date").value || todayStr(), createdAt: serverTimestamp() });
     closeModal("modal-expense");
     ["ex-item","ex-amount","ex-date"].forEach(function(id) { $(id).value = ""; });
     showToast("Expense logged!");
   } catch(e) { showToast(e.message, true); }
 };
-
 window.deleteExpense = async function(id) {
   if (!confirm("Delete this expense?")) return;
   await deleteDoc(docRef("expenses", id));
   showToast("Expense removed");
 };
-
 function renderExpenses() {
   var tb = $("expenseBody");
   if (!allExpenses.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-dim)">No expenses yet</td></tr>'; return; }
-  tb.innerHTML = allExpenses.map(function(e) {
-    return "<tr><td><span class='client-name'>" + e.item + "</span></td><td><span class='badge badge-dim'>" + e.category + "</span></td><td>" + e.date + "</td><td style='text-align:right;font-family:\"Cormorant Garamond\",serif;font-size:16px'>" + fmt(e.amount) + "</td><td style='text-align:right'><button class='icon-btn' onclick='deleteExpense(\"" + e.id + "\")'>X</button></td></tr>";
-  }).join("");
+  tb.innerHTML = allExpenses.map(function(e) { return "<tr><td><span class='client-name'>" + e.item + "</span></td><td><span class='badge badge-dim'>" + e.category + "</span></td><td>" + e.date + "</td><td style='text-align:right'>" + fmt(e.amount) + "</td><td style='text-align:right'><button class='icon-btn' onclick='deleteExpense(\"" + e.id + "\")'>X</button></td></tr>"; }).join("");
 }
-
 function updateExpenseSummary() {
   var mStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split("T")[0];
   $("exp-month").textContent = fmt(allExpenses.filter(function(e) { return e.date >= mStart; }).reduce(function(s, e) { return s + Number(e.amount || 0); }, 0));
   $("exp-kit").textContent = fmt(allExpenses.filter(function(e) { return e.category === "Kit and Products"; }).reduce(function(s, e) { return s + Number(e.amount || 0); }, 0));
   $("exp-travel").textContent = fmt(allExpenses.filter(function(e) { return e.category === "Travel"; }).reduce(function(s, e) { return s + Number(e.amount || 0); }, 0));
-}
-
-// BOARDS
-window.saveBoard = async function() {
-  var name = $("mb-name").value.trim();
-  if (!name) { showToast("Board name is required", true); return; }
-  try {
-    await addDoc(col("boards"), {
-      name: name,
-      client: $("mb-client").value.trim(),
-      occasion: $("mb-occasion").value,
-      colors: [$("mb-c1").value, $("mb-c2").value, $("mb-c3").value, $("mb-c4").value],
-      notes: $("mb-notes").value.trim(),
-      createdAt: serverTimestamp()
-    });
-    closeModal("modal-board");
-    ["mb-name","mb-client","mb-notes"].forEach(function(id) { $(id).value = ""; });
-    showToast("Mood board created!");
-  } catch(e) { showToast(e.message, true); }
-};
-
-window.deleteBoard = async function(id) {
-  if (!confirm("Delete this mood board?")) return;
-  await deleteDoc(docRef("boards", id));
-  showToast("Board deleted");
-};
-
-function renderBoards() {
-  var g = $("boardGrid");
-  var newCard = '<div class="board-new" onclick="openModal(\'modal-board\')"><div style="font-size:28px">+</div><div style="font-size:13px">New Mood Board</div></div>';
-  if (!allBoards.length) { g.innerHTML = newCard; return; }
-  g.innerHTML = allBoards.map(function(b) {
-    var colors = b.colors || ["#333","#444","#555","#666"];
-    return '<div class="board-card">' +
-      '<div class="board-preview">' + colors.map(function(c) { return '<div style="background:' + c + '"></div>'; }).join("") + '</div>' +
-      '<div class="board-info">' +
-      '<div><div class="board-name">' + b.name + '</div><div class="board-meta">' + (b.client || "") + (b.client && b.occasion ? " - " : "") + (b.occasion || "") + '</div></div>' +
-      '<div class="board-card-actions"><button class="icon-btn" onclick="deleteBoard(\'' + b.id + '\')">X</button></div>' +
-      '</div></div>';
-  }).join("") + newCard;
 }
 </script>
 </body>
