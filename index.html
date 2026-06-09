@@ -790,6 +790,7 @@ var currentClientId = null;
 var currentLookId = null;
 var currentLookData = null;
 var allLooks = [];
+var imageBase64Cache = {};
 
 var $ = function(id) { return document.getElementById(id); };
 var fmt = function(n) { return "Rs " + Number(n || 0).toLocaleString("en-IN"); };
@@ -1243,6 +1244,13 @@ window.handleImageUpload = async function(slot, input) {
   var area = $(areaId);
   area.innerHTML = '<div class="loading-spinner" style="margin:0 auto"></div>';
 
+  // Store base64 in memory for AI analysis
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    imageBase64Cache[slot] = e.target.result;
+  };
+  reader.readAsDataURL(file);
+
   try {
     var path = "users/" + currentUser.uid + "/looks/" + currentLookId + "/" + slot + "_" + Date.now() + "." + file.name.split(".").pop();
     var sRef = storageRef(storage, path);
@@ -1286,11 +1294,13 @@ window.analyseSlot = async function(slot) {
   var notesField = slot + "-notes";
   if (slot === "outfit") notesField = "outfit-notes";
 
+  var imageData = imageBase64Cache[slot] || imgUrl;
+
   try {
     var response = await fetch("https://analyseimage-z4j4djieeq-uc.a.run.app", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ imageUrl: imgUrl, prompt: prompts[slot] })
+      body: JSON.stringify({ imageData: imageData, prompt: prompts[slot] })
     });
     var data = await response.json();
     var text = data.result || "Could not analyse image.";
