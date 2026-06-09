@@ -1287,23 +1287,24 @@ window.analyseSlot = async function(slot) {
   if (slot === "outfit") notesField = "outfit-notes";
 
   try {
-    var response = await fetch("https://api.anthropic.com/v1/messages", {
+    var OPENAI_KEY = "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";
+    var response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + OPENAI_KEY },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "gpt-4o",
         max_tokens: 500,
         messages: [{
           role: "user",
           content: [
-            { type: "image", source: { type: "url", url: imgUrl } },
+            { type: "image_url", image_url: { url: imgUrl } },
             { type: "text", text: prompts[slot] }
           ]
         }]
       })
     });
     var data = await response.json();
-    var text = data.content && data.content[0] ? data.content[0].text : "Could not analyse image.";
+    var text = data.choices && data.choices[0] ? data.choices[0].message.content : "Could not analyse image.";
     $(notesField).value = text;
     await saveLookField(slot + "Notes" === "outfitNotes" ? "outfitNotes" : slot + "Notes", text);
     if (slot === "outfit") await saveLookField("outfitNotes", text);
