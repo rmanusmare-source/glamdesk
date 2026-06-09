@@ -1287,24 +1287,13 @@ window.analyseSlot = async function(slot) {
   if (slot === "outfit") notesField = "outfit-notes";
 
   try {
-    var OPENAI_KEY = "PASTE_YOUR_OPENAI_KEY_HERE";
-    var response = await fetch("https://api.openai.com/v1/chat/completions", {
+    var response = await fetch("https://us-central1-glamdesk-a6bde.cloudfunctions.net/analyseImage", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + OPENAI_KEY },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        max_tokens: 500,
-        messages: [{
-          role: "user",
-          content: [
-            { type: "image_url", image_url: { url: imgUrl } },
-            { type: "text", text: prompts[slot] }
-          ]
-        }]
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageUrl: imgUrl, prompt: prompts[slot] })
     });
     var data = await response.json();
-    var text = data.choices && data.choices[0] ? data.choices[0].message.content : "Could not analyse image.";
+    var text = data.result || "Could not analyse image.";
     $(notesField).value = text;
     await saveLookField(slot + "Notes" === "outfitNotes" ? "outfitNotes" : slot + "Notes", text);
     if (slot === "outfit") await saveLookField("outfitNotes", text);
