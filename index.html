@@ -1287,7 +1287,7 @@ window.analyseSlot = async function(slot) {
   if (slot === "outfit") notesField = "outfit-notes";
 
   try {
-    var response = await fetch("https://us-central1-glamdesk-a6bde.cloudfunctions.net/analyseImage", {
+    var response = await fetch("https://analyseimage-z4j4djieeq-uc.a.run.app", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ imageUrl: imgUrl, prompt: prompts[slot] })
